@@ -21,7 +21,7 @@ db.fichajeshechos.aggregate([
     },
 ])
 
-/* Queremos saber todo el dinero que ha generado cada vendedor ordenadas de mayor a menor. */
+/* Queremos saber todo el dinero que ha generado cada equipo vendedor ordenadas de mayor a menor. */
 db.ventas.aggregate( [
     {
         $lookup:{
@@ -92,61 +92,3 @@ db.fichajeshechos.aggregate( [
         }
     }
 ] )
-
-/* Queremos saber todo el dinero que ha generado cada vendedor ordenadas de mayor a menor. */
-db.ventas.aggregate( [
-    {
-        $lookup:{
-            from: 'fichajeshechos',
-            localField: 'idFichaje',
-            foreignField: 'idFichaje',
-            as: 'equipo'
-        }
-    },
-    {
-        $unwind: {
-            path:"$equipo"
-        }
-    },
-    {
-       $project: {
-            _id: 0,
-            vendedor:1,
-            _idOrdenador:"$equipo._idjugador",
-            precio: 1,
-            ganancias: {
-                $let: {
-                    vars: {
-                        price: { 
-                            $cond: { 
-                                if: '$equipo.caracteristicas.goleador', 
-                                then: 150, 
-                                else: 0 
-                            } 
-                        }
-                    },
-                    in: { 
-                        $subtract: [ 
-                            "$equipo.precio", 
-                            "$$price" 
-                        ] 
-                    }
-                }
-            }
-        }
-    },
-    {
-        $group:{
-            _id: "$vendedor",
-            ganancias:{
-                $sum: "$ganancias"
-            }
-        }
-    },
-    {
-        $sort:{
-            ganancias:-1
-        }
-    }
-] )
-
