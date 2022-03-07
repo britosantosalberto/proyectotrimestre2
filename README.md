@@ -1,5 +1,4 @@
-# proyectotrimestre2
-Léame Proyecto Final Alberto Brito
+# Readme  Proyecto Alberto Brito Santos
 Nombre: Alberto
 
 Apellidos: Brito Santos
